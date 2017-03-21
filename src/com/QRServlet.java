@@ -21,15 +21,20 @@ public class QRServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 			throws ServletException, IOException {
+//		Dynamically extract name from param
 		String name = req.getParameter("name");
+//		Extract lat/long derived from HTML5 with JS
+		String lat = req.getParameter("lat");
+		String lon = req.getParameter("long");
 		
+//		...if issue...
 		if (name == null) {
 			name = "test";
 		}
-		System.out.println(name);
+		
+//		Extract IP
 		InetAddress inetAddress = InetAddress.getLocalHost();
 		String ipAddress = inetAddress.getHostAddress();
-		System.out.println(ipAddress);
 		
 //		Set content type to display QR code as image (instead of gobbledy gook)
 		res.setContentType("image/png");
@@ -37,10 +42,22 @@ public class QRServlet extends HttpServlet {
 //		Get the output stream from the response
 		ServletOutputStream os = res.getOutputStream();
 		
+		System.out.println(generateQRData(name, ipAddress, lat, lon));
 //		Feed data to the QRCode library, write it to the Servlet's OutputStream
-		QRCode.from(name).to(ImageType.PNG).writeTo(os);
+		QRCode
+			.from(generateQRData(name, ipAddress, lat, lon))
+			.to(ImageType.PNG)
+			.writeTo(os);
 		
 //		Clean up
 		os.close();
+	}
+	
+	public String generateQRData(String name, String ip, String lat, String lon) {
+		String data = "";
+		data += name + "&";
+		data += ip + "&";
+		data += lat + ":" + lon;
+		return data;
 	}
 }

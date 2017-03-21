@@ -30,12 +30,14 @@
 		document.contactForm.submit
 			.addEventListener("click", function(e) {
 				e.preventDefault();
-				document.getElementById("qr").className = "";
-				document.getElementById("qr-code").src = ` 
-					http://localhost:8080/ServletImgTest/test?name="${document.contactForm.name.value}"
-				`;
+				// asynchronously retrieve geolocation information from navigator object
 				navigator.geolocation.getCurrentPosition(function(position) {
 					  console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
+					  var imgSrc = `
+					  	http://localhost:8080/ServletImgTest/test?name="${document.contactForm.name.value}&lat=${position.coords.latitude}&long=${position.coords.longitude}"
+					  `
+					  document.getElementById("qr-code").src = imgSrc;
+					  document.getElementById("qr").className = "";
 					});
 			});
 		
