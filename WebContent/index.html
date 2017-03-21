@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Test</title>
+</head>
+
+<style>
+	.hidden {
+		display : none;
+	}
+</style>
+<body>
+	<form name="contactForm">
+		<input type="text" name="name" value="Kris" />
+		<input type="submit" value="generate" name="submit" />
+	</form>
+	<div id="qr" class="hidden">
+		<img id="qr-code" src="" alt="QRCODE" />
+	</div>
+	<script>
+		if ("geolocation" in navigator) {
+		  /* geolocation is available */
+		  console.log("hooray geolocation");
+		} else {
+		  /* geolocation IS NOT available */
+		  console.log("the browser is older than hell");
+		}
+	
+		document.contactForm.submit
+			.addEventListener("click", function(e) {
+				e.preventDefault();
+				document.getElementById("qr").className = "";
+				document.getElementById("qr-code").src = ` 
+					http://localhost:8080/ServletImgTest/test?name="${document.contactForm.name.value}"
+				`;
+				navigator.geolocation.getCurrentPosition(function(position) {
+					  console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
+					});
+			});
+		
+	</script>
+</body>
+</html>
